@@ -1,258 +1,263 @@
-<!DOCTYPE html>
+index.html<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>디지털 오디오 이론 심화 퀴즈</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #0f0c29; font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif; }
+    body { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif; display: flex; align-items: center; justify-content: center; padding: 20px; }
     ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(167,139,250,0.4); border-radius: 3px; }
-    button { font-family: inherit; }
+    #app { background: rgba(255,255,255,0.06); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.15); border-radius: 28px; padding: 36px 32px; max-width: 660px; width: 100%; box-shadow: 0 25px 80px rgba(0,0,0,0.5); color: #fff; }
+    .title { font-size: 1rem; color: #a78bfa; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; text-align: center; margin-bottom: 8px; }
+    .meta { color: rgba(255,255,255,0.45); font-size: 0.82rem; text-align: center; margin-bottom: 12px; }
+    .progress { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+    .dot { width: 22px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.15); transition: background 0.3s; }
+    .dot.done { background: #a78bfa; }
+    .dot.current { background: #fff; }
+    .emoji { font-size: 3rem; text-align: center; margin-bottom: 10px; }
+    .question { font-size: 1.08rem; font-weight: 600; line-height: 1.65; text-align: center; margin-bottom: 24px; color: #f0f0ff; }
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .opt-btn { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); color: #e2e8f0; border-radius: 13px; padding: 13px 16px; text-align: left; font-size: 0.93rem; cursor: pointer; transition: all 0.2s; line-height: 1.5; width: 100%; font-family: inherit; }
+    .opt-btn:hover:not(:disabled) { background: rgba(255,255,255,0.12); }
+    .opt-btn.correct { background: rgba(74,222,128,0.2); border: 1.5px solid #4ade80; color: #4ade80; font-weight: 700; }
+    .opt-btn.wrong { background: rgba(248,113,113,0.2); border: 1.5px solid #f87171; color: #f87171; }
+    .explanation { margin-top: 16px; padding: 15px; background: rgba(167,139,250,0.12); border: 1px solid rgba(167,139,250,0.35); border-radius: 13px; font-size: 0.88rem; color: #e2e8f0; line-height: 1.7; display: none; }
+    .next-btn { margin-top: 18px; width: 100%; padding: 14px; border-radius: 13px; background: linear-gradient(135deg, #7c3aed, #a78bfa); border: none; color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: inherit; display: none; }
+    /* Result */
+    #result { display: none; text-align: center; }
+    .score-big { font-size: 4.5rem; font-weight: 900; line-height: 1; margin-bottom: 6px; }
+    .grade-label { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; color: #e2e8f0; }
+    .emoji-row { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; margin-bottom: 16px; }
+    .wrong-section { text-align: left; background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); border-radius: 14px; padding: 16px 18px; max-height: 300px; overflow-y: auto; margin-bottom: 16px; }
+    .wrong-title { color: #f87171; font-weight: 700; margin-bottom: 10px; font-size: 0.9rem; }
+    .wrong-item { font-size: 0.84rem; color: #fca5a5; margin-bottom: 10px; line-height: 1.55; border-bottom: 1px solid rgba(255,255,255,0.07); padding-bottom: 8px; }
+    .wrong-answer { color: #86efac; }
+    .restart-btn { width: 100%; padding: 14px; border-radius: 13px; background: linear-gradient(135deg, #059669, #34d399); border: none; color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: inherit; }
   </style>
 </head>
 <body>
-  <div id="root"></div>
+<div id="app">
+  <!-- Quiz Screen -->
+  <div id="quiz">
+    <div class="title">🎵 디지털 오디오 이론 — 심화 퀴즈</div>
+    <div class="meta" id="meta"></div>
+    <div class="progress" id="progress"></div>
+    <div class="emoji" id="emoji"></div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()"></button>
+  </div>
+  <!-- Result Screen -->
+  <div id="result">
+    <div style="font-size:1.8rem;margin-bottom:6px">📊 최종 결과</div>
+    <div class="score-big" id="scoreBig"></div>
+    <div class="grade-label" id="gradeLabel"></div>
+    <div class="emoji-row" id="emojiRow"></div>
+    <div class="wrong-section" id="wrongSection" style="display:none">
+      <div class="wrong-title" id="wrongTitle"></div>
+      <div id="wrongList"></div>
+    </div>
+    <button class="restart-btn" onclick="restart()">🔄 처음부터 다시</button>
+  </div>
+</div>
 
-  <script type="text/babel">
-    const { useState } = React;
+<script>
+const questions = [
+  {
+    question: "나이퀴스트-섀넌 샘플링 정리(Nyquist-Shannon Sampling Theorem)에 따르면, 아날로그 신호를 정확하게 재현하기 위해 샘플링 주파수(fs)는 신호의 최대 주파수(fmax)에 대해 어떤 조건을 만족해야 하는가?",
+    options: ["fs ≥ fmax", "fs ≥ 2 × fmax", "fs ≥ 4 × fmax", "fs = fmax / 2"],
+    answer: 1, emoji: "📐",
+    explanation: "나이퀴스트 정리에 의하면 샘플링 주파수는 신호 최대 주파수의 2배 이상이어야 원래 신호를 완전히 복원할 수 있다. 이 조건을 위반하면 앨리어싱(Aliasing)이 발생한다. CD의 fs=44.1kHz는 인간 가청 상한 20kHz의 약 2.2배로 이 조건을 충족한다.",
+  },
+  {
+    question: "앨리어싱(Aliasing) 현상을 방지하기 위해 ADC 전단에 삽입하는 필터는?",
+    options: ["로우패스 필터 (Anti-aliasing filter)", "하이패스 필터", "노치 필터", "올패스 필터"],
+    answer: 0, emoji: "🔬",
+    explanation: "앨리어싱은 샘플링 주파수의 절반(나이퀴스트 주파수)을 초과하는 성분이 접혀 들어와 저주파 간섭음을 만드는 현상이다. 이를 막기 위해 ADC 입력 전에 나이퀴스트 주파수 이상의 성분을 차단하는 Anti-aliasing 로우패스 필터를 사용한다.",
+  },
+  {
+    question: "비트 뎁스(Bit Depth)가 높을수록 오디오 신호에 미치는 영향으로 올바른 것은?",
+    options: ["샘플링 주파수가 높아져 고역 표현이 향상된다", "양자화 단계 수가 늘어나 동적 범위(Dynamic Range)가 넓어지고 양자화 노이즈가 줄어든다", "파일 재생 속도가 빨라진다", "스테레오 채널 수가 증가한다"],
+    answer: 1, emoji: "📊",
+    explanation: "비트 뎁스는 각 샘플의 진폭을 몇 단계로 표현하는지를 나타낸다. 16비트는 2¹⁶=65,536단계, 24비트는 2²⁴=16,777,216단계로 표현한다. 단계가 세밀할수록 동적 범위가 커지고, 아주 작은 소리도 정교하게 담을 수 있다.",
+  },
+  {
+    question: "양자화 노이즈(Quantization Noise)를 줄이기 위해 신호에 의도적으로 저레벨 무작위 노이즈를 추가하는 기술은?",
+    options: ["딜레이(Delay)", "디더링(Dithering)", "컴프레션(Compression)", "오버샘플링(Oversampling)"],
+    answer: 1, emoji: "🎛️",
+    explanation: "디더링(Dithering)은 양자화 과정에서 발생하는 비선형 왜곡(양자화 노이즈)을 통계적으로 분산시키기 위해 미세한 랜덤 노이즈를 의도적으로 추가하는 기법이다. 이를 통해 가청 왜곡 성분을 노이즈 플로어 아래로 낮출 수 있다.",
+  },
+  {
+    question: "MP3(MPEG-1 Audio Layer III) 코덱이 음원 압축에 사용하는 핵심 심리음향(Psychoacoustics) 원리는?",
+    options: ["하모닉 강화(Harmonic Enhancement)와 위상 반전", "청각 마스킹(Auditory Masking)을 이용한 비가청 성분 제거", "샘플링 레이트를 동적으로 낮추는 가변 주파수 샘플링", "스테레오 채널을 모노로 다운믹싱하여 데이터를 절감"],
+    answer: 1, emoji: "🧠",
+    explanation: "MP3는 동시 마스킹(Simultaneous Masking)과 시간 마스킹(Temporal Masking) 현상을 활용한다. 강한 소리 근방의 약한 소리는 인간이 지각하지 못하므로(마스킹), 이 정보를 제거하거나 거칠게 양자화해 비트레이트를 대폭 낮춘다.",
+  },
+  {
+    question: "PCM 비트레이트를 결정하는 세 가지 요소의 관계로 올바른 것은?",
+    options: ["샘플링 레이트가 높을수록, 비트 뎁스가 낮을수록, 채널이 많을수록 비트레이트가 높아진다", "샘플링 레이트·비트 뎁스·채널 수 세 값이 모두 클수록 비트레이트가 높아진다", "비트레이트는 샘플링 레이트에만 의존하고 비트 뎁스와 채널 수는 무관하다", "채널 수가 늘어나면 샘플링 레이트가 자동으로 낮아져 비트레이트는 일정하다"],
+    answer: 1, emoji: "🧮",
+    explanation: "PCM 비트레이트(bps) = 샘플링 레이트 × 비트 뎁스 × 채널 수. 세 값이 모두 비례 관계다. CD 스테레오(44,100 × 16 × 2 ≈ 1,411 kbps)와 고해상도 오디오(96,000 × 24 × 2 ≈ 4,608 kbps)의 차이가 이 공식에서 비롯된다.",
+  },
+  {
+    question: "FFT(고속 푸리에 변환) 분석에서 윈도우 크기(N)를 늘렸을 때 나타나는 트레이드오프(Trade-off)는?",
+    options: ["주파수 분해능은 높아지지만 시간 분해능은 낮아진다", "주파수 분해능과 시간 분해능 모두 높아진다", "주파수 분해능은 낮아지고 시간 분해능은 높아진다", "비트 뎁스가 자동으로 증가한다"],
+    answer: 0, emoji: "📈",
+    explanation: "주파수 분해능 Δf = fs/N이므로 N이 클수록 주파수를 세밀하게 구분할 수 있다. 그러나 N이 클수록 한 번의 분석에 더 긴 시간 구간이 필요해 빠르게 변하는 신호(타격음, 어택)의 시간적 위치를 정확히 파악하기 어려워진다. 이를 시간-주파수 불확정성(Uncertainty Principle)이라 한다.",
+  },
+  {
+    question: "오버샘플링(Oversampling) DAC에서 샘플링 레이트를 높이는 주된 이유는?",
+    options: ["원본 신호의 주파수 성분을 확장하기 위해", "재건 필터(Reconstruction Filter)의 급격한 차단 특성 요구를 완화하고 양자화 노이즈를 고주파 대역으로 분산시키기 위해", "스테레오 신호를 서라운드로 업믹싱하기 위해", "비트 뎁스를 증가시켜 동적 범위를 확장하기 위해"],
+    answer: 1, emoji: "🔊",
+    explanation: "오버샘플링은 DAC 후단의 아날로그 재건 필터(Reconstruction LPF)가 나이퀴스트 주파수 근방에서 급격히 감쇠해야 하는 부담을 줄여준다. 또한 노이즈 셰이핑(Noise Shaping)과 결합하면 양자화 노이즈를 가청 대역 밖으로 이동시켜 체감 SNR을 향상시킨다.",
+  },
+  {
+    question: "FLAC(Free Lossless Audio Codec)과 MP3의 근본적인 차이점은?",
+    options: ["FLAC은 스테레오만 지원하고, MP3는 모노만 지원한다", "FLAC은 무손실 압축(Lossless)으로 원본 PCM 데이터를 완전히 복원할 수 있으나, MP3는 손실 압축(Lossy)으로 원본 복원이 불가능하다", "FLAC은 샘플링 레이트를 낮춰 용량을 줄이고, MP3는 비트 뎁스를 낮춰 용량을 줄인다", "FLAC은 DRM이 내장되어 있고, MP3는 오픈 포맷이다"],
+    answer: 1, emoji: "💾",
+    explanation: "FLAC은 예측 부호화(Linear Predictive Coding)와 Rice 부호화를 사용해 원본 PCM과 100% 동일한 데이터를 약 50~60% 크기로 압축하는 무손실 코덱이다. 반면 MP3는 심리음향 모델 기반의 손실 압축으로, 디코딩 후 원본과 데이터가 다르다.",
+  },
+  {
+    question: "디지털-아날로그 변환(DAC) 과정에서 발생하는 재건 필터(Reconstruction Filter)의 역할은?",
+    options: ["아날로그 신호를 다시 디지털로 변환하기 위해 샘플을 측정한다", "샘플링 과정에서 생긴 이미지 주파수(나이퀴스트 이상의 성분)를 제거하여 원래 아날로그 파형을 매끄럽게 복원한다", "신호의 비트 뎁스를 높여 동적 범위를 확장한다", "스테레오 신호를 좌우 채널로 분리한다"],
+    answer: 1, emoji: "🔁",
+    explanation: "DAC는 이산적인 샘플값들을 계단 형태의 신호로 출력하는데, 이 과정에서 나이퀴스트 주파수 이상의 이미지 성분이 생긴다. 재건 필터(로우패스 필터)는 이 불필요한 고주파 성분을 제거해 원래의 부드러운 아날로그 파형을 복원하는 역할을 한다.",
+  },
+];
 
-    const questions = [
-      {
-        id: 1,
-        question: "나이퀴스트-섀넌 샘플링 정리(Nyquist-Shannon Sampling Theorem)에 따르면, 아날로그 신호를 정확하게 재현하기 위해 샘플링 주파수(fs)는 신호의 최대 주파수(fmax)에 대해 어떤 조건을 만족해야 하는가?",
-        options: ["fs ≥ fmax", "fs ≥ 2 × fmax", "fs ≥ 4 × fmax", "fs = fmax / 2"],
-        answer: 1, emoji: "📐",
-        explanation: "나이퀴스트 정리에 의하면 샘플링 주파수는 신호 최대 주파수의 2배 이상이어야 원래 신호를 완전히 복원할 수 있다. 이 조건을 위반하면 앨리어싱(Aliasing)이 발생한다. CD의 fs=44.1kHz는 인간 가청 상한 20kHz의 약 2.2배로 이 조건을 충족한다.",
-      },
-      {
-        id: 2,
-        question: "앨리어싱(Aliasing) 현상을 방지하기 위해 ADC 전단에 삽입하는 필터는?",
-        options: ["로우패스 필터 (Anti-aliasing filter)", "하이패스 필터", "노치 필터", "올패스 필터"],
-        answer: 0, emoji: "🔬",
-        explanation: "앨리어싱은 샘플링 주파수의 절반(나이퀴스트 주파수)을 초과하는 성분이 접혀 들어와 저주파 간섭음을 만드는 현상이다. 이를 막기 위해 ADC 입력 전에 나이퀴스트 주파수 이상의 성분을 차단하는 Anti-aliasing 로우패스 필터를 사용한다.",
-      },
-      {
-        id: 3,
-        question: "비트 뎁스(Bit Depth)가 높을수록 오디오 신호에 미치는 영향으로 올바른 것은?",
-        options: [
-          "샘플링 주파수가 높아져 고역 표현이 향상된다",
-          "양자화 단계 수가 늘어나 동적 범위(Dynamic Range)가 넓어지고 양자화 노이즈가 줄어든다",
-          "파일 재생 속도가 빨라진다",
-          "스테레오 채널 수가 증가한다",
-        ],
-        answer: 1, emoji: "📊",
-        explanation: "비트 뎁스는 각 샘플의 진폭을 몇 단계로 표현하는지를 나타낸다. 16비트는 2¹⁶=65,536단계, 24비트는 2²⁴=16,777,216단계로 표현한다. 단계가 세밀할수록 신호와 양자화 노이즈의 차이(동적 범위)가 커지고, 아주 작은 소리도 정교하게 담을 수 있다.",
-      },
-      {
-        id: 4,
-        question: "양자화 노이즈(Quantization Noise)를 줄이기 위해 신호에 의도적으로 저레벨 무작위 노이즈를 추가하는 기술은?",
-        options: ["딜레이(Delay)", "디더링(Dithering)", "컴프레션(Compression)", "오버샘플링(Oversampling)"],
-        answer: 1, emoji: "🎛️",
-        explanation: "디더링(Dithering)은 양자화 과정에서 발생하는 비선형 왜곡(양자화 노이즈)을 통계적으로 분산시키기 위해 미세한 랜덤 노이즈를 의도적으로 추가하는 기법이다. 이를 통해 가청 왜곡 성분을 노이즈 플로어 아래로 낮출 수 있다.",
-      },
-      {
-        id: 5,
-        question: "MP3(MPEG-1 Audio Layer III) 코덱이 음원 압축에 사용하는 핵심 심리음향(Psychoacoustics) 원리는?",
-        options: ["하모닉 강화(Harmonic Enhancement)와 위상 반전", "청각 마스킹(Auditory Masking)을 이용한 비가청 성분 제거", "샘플링 레이트를 동적으로 낮추는 가변 주파수 샘플링", "스테레오 채널을 모노로 다운믹싱하여 데이터를 절감"],
-        answer: 1, emoji: "🧠",
-        explanation: "MP3는 동시 마스킹(Simultaneous Masking)과 시간 마스킹(Temporal Masking) 현상을 활용한다. 강한 소리 근방의 약한 소리는 인간이 지각하지 못하므로(마스킹), 이 정보를 제거하거나 거칠게 양자화해 비트레이트를 대폭 낮춘다.",
-      },
-      {
-        id: 6,
-        question: "PCM 비트레이트를 결정하는 세 가지 요소의 관계로 올바른 것은?",
-        options: [
-          "샘플링 레이트가 높을수록, 비트 뎁스가 낮을수록, 채널이 많을수록 비트레이트가 높아진다",
-          "샘플링 레이트·비트 뎁스·채널 수 세 값이 모두 클수록 비트레이트가 높아진다",
-          "비트레이트는 샘플링 레이트에만 의존하고 비트 뎁스와 채널 수는 무관하다",
-          "채널 수가 늘어나면 샘플링 레이트가 자동으로 낮아져 비트레이트는 일정하다",
-        ],
-        answer: 1, emoji: "🧮",
-        explanation: "PCM 비트레이트(bps) = 샘플링 레이트 × 비트 뎁스 × 채널 수. 세 값이 모두 비례 관계다. CD 스테레오(44,100 × 16 × 2 ≈ 1,411 kbps)와 고해상도 오디오(96,000 × 24 × 2 ≈ 4,608 kbps)의 차이가 이 공식에서 비롯된다.",
-      },
-      {
-        id: 7,
-        question: "FFT(고속 푸리에 변환) 분석에서 윈도우 크기(N)를 늘렸을 때 나타나는 트레이드오프(Trade-off)는?",
-        options: [
-          "주파수 분해능은 높아지지만 시간 분해능은 낮아진다",
-          "주파수 분해능과 시간 분해능 모두 높아진다",
-          "주파수 분해능은 낮아지고 시간 분해능은 높아진다",
-          "비트 뎁스가 자동으로 증가한다",
-        ],
-        answer: 0, emoji: "📈",
-        explanation: "주파수 분해능 Δf = fs/N이므로 N이 클수록 주파수를 세밀하게 구분할 수 있다. 그러나 N이 클수록 한 번의 분석에 더 긴 시간 구간이 필요해 빠르게 변하는 신호(타격음, 어택)의 시간적 위치를 정확히 파악하기 어려워진다. 이를 시간-주파수 불확정성(Uncertainty Principle)이라 한다.",
-      },
-      {
-        id: 8,
-        question: "오버샘플링(Oversampling) DAC에서 샘플링 레이트를 높이는 주된 이유는?",
-        options: [
-          "원본 신호의 주파수 성분을 확장하기 위해",
-          "재건 필터(Reconstruction Filter)의 급격한 차단 특성 요구를 완화하고 양자화 노이즈를 고주파 대역으로 분산시키기 위해",
-          "스테레오 신호를 서라운드로 업믹싱하기 위해",
-          "비트 뎁스를 증가시켜 동적 범위를 확장하기 위해",
-        ],
-        answer: 1, emoji: "🔊",
-        explanation: "오버샘플링은 DAC 후단의 아날로그 재건 필터(Reconstruction LPF)가 나이퀴스트 주파수 근방에서 급격히 감쇠해야 하는 부담을 줄여준다. 또한 노이즈 셰이핑(Noise Shaping)과 결합하면 양자화 노이즈를 가청 대역 밖으로 이동시켜 체감 SNR을 향상시킨다.",
-      },
-      {
-        id: 9,
-        question: "FLAC(Free Lossless Audio Codec)과 MP3의 근본적인 차이점은?",
-        options: [
-          "FLAC은 스테레오만 지원하고, MP3는 모노만 지원한다",
-          "FLAC은 무손실 압축(Lossless)으로 원본 PCM 데이터를 완전히 복원할 수 있으나, MP3는 손실 압축(Lossy)으로 원본 복원이 불가능하다",
-          "FLAC은 샘플링 레이트를 낮춰 용량을 줄이고, MP3는 비트 뎁스를 낮춰 용량을 줄인다",
-          "FLAC은 DRM이 내장되어 있고, MP3는 오픈 포맷이다",
-        ],
-        answer: 1, emoji: "💾",
-        explanation: "FLAC은 예측 부호화(Linear Predictive Coding)와 Rice 부호화를 사용해 원본 PCM과 100% 동일한 데이터를 약 50~60% 크기로 압축하는 무손실 코덱이다. 반면 MP3는 심리음향 모델 기반의 손실 압축으로, 디코딩 후 원본과 데이터가 다르다.",
-      },
-      {
-        id: 10,
-        question: "디지털-아날로그 변환(DAC) 과정에서 발생하는 '재건 필터(Reconstruction Filter)'의 역할은?",
-        options: [
-          "아날로그 신호를 다시 디지털로 변환하기 위해 샘플을 측정한다",
-          "샘플링 과정에서 생긴 이미지 주파수(나이퀴스트 이상의 성분)를 제거하여 원래 아날로그 파형을 매끄럽게 복원한다",
-          "신호의 비트 뎁스를 높여 동적 범위를 확장한다",
-          "스테레오 신호를 좌우 채널로 분리한다",
-        ],
-        answer: 1, emoji: "🔁",
-        explanation: "DAC는 이산적인 샘플값들을 계단 형태의 신호로 출력하는데, 이 과정에서 나이퀴스트 주파수 이상의 이미지 성분이 생긴다. 재건 필터(로우패스 필터)는 이 불필요한 고주파 성분을 제거해 원래의 부드러운 아날로그 파형을 복원하는 역할을 한다.",
-      },
-    ];
+let current = 0;
+let score = 0;
+let selected = null;
+let answered = false;
+let wrongAnswers = [];
 
-    function App() {
-      const [current, setCurrent] = useState(0);
-      const [selected, setSelected] = useState(null);
-      const [score, setScore] = useState(0);
-      const [showResult, setShowResult] = useState(false);
-      const [answered, setAnswered] = useState(false);
-      const [wrongAnswers, setWrongAnswers] = useState([]);
+function render() {
+  const q = questions[current];
+  const total = questions.length;
 
-      const total = questions.length;
-      const q = questions[current];
+  document.getElementById('meta').textContent = (current + 1) + ' / ' + total + ' 문제 · 현재 점수 ' + score + '점';
 
-      const handleSelect = (idx) => {
-        if (answered) return;
-        setSelected(idx);
-        setAnswered(true);
-        if (idx === q.answer) setScore(s => s + 1);
-        else setWrongAnswers(prev => [...prev, current]);
-      };
+  // Progress dots
+  const prog = document.getElementById('progress');
+  prog.innerHTML = '';
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i < current ? ' done' : i === current ? ' current' : '');
+    prog.appendChild(d);
+  }
 
-      const handleNext = () => {
-        if (current + 1 >= total) setShowResult(true);
-        else { setCurrent(c => c + 1); setSelected(null); setAnswered(false); }
-      };
+  document.getElementById('emoji').textContent = q.emoji;
+  document.getElementById('question').textContent = q.question;
 
-      const handleRestart = () => {
-        setCurrent(0); setSelected(null); setScore(0);
-        setShowResult(false); setAnswered(false); setWrongAnswers([]);
-      };
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  const nums = ['①','②','③','④'];
+  q.options.forEach(function(opt, idx) {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = '<span style="opacity:0.45;margin-right:10px">' + nums[idx] + '</span>' + opt;
+    btn.onclick = function() { selectAnswer(idx); };
+    opts.appendChild(btn);
+  });
 
-      const getGrade = () => {
-        const pct = score / total;
-        if (pct === 1)  return { label: "🏆 만점! 디지털 오디오 이론 완전 정복", color: "#FFD700" };
-        if (pct >= 0.8) return { label: "🥇 우수 — 핵심 개념을 깊이 이해하고 있습니다", color: "#e6b800" };
-        if (pct >= 0.6) return { label: "🥈 양호 — 기본기는 탄탄, 심화 개념 보완 필요", color: "#aaa" };
-        if (pct >= 0.4) return { label: "🥉 미흡 — 전반적인 재학습을 권장합니다", color: "#CD7F32" };
-        return { label: "📚 기초부터 체계적으로 재학습을 권장합니다", color: "#e74c3c" };
-      };
+  document.getElementById('explanation').style.display = 'none';
+  document.getElementById('explanation').textContent = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
 
-      const grade = getGrade();
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  selected = idx;
 
-      const app = { minHeight:"100vh", background:"linear-gradient(135deg,#0f0c29,#302b63,#24243e)", display:"flex", alignItems:"center", justifyContent:"center", padding:"20px" };
-      const card = { background:"rgba(255,255,255,0.06)", backdropFilter:"blur(20px)", border:"1px solid rgba(255,255,255,0.15)", borderRadius:"28px", padding:"36px 32px", maxWidth:"660px", width:"100%", boxShadow:"0 25px 80px rgba(0,0,0,0.5)", color:"#fff" };
+  const q = questions[current];
+  const buttons = document.getElementById('options').querySelectorAll('.opt-btn');
 
-      if (showResult) {
-        return (
-          <div style={app}>
-            <div style={card}>
-              <div style={{textAlign:"center"}}>
-                <div style={{fontSize:"1.8rem",marginBottom:"6px"}}>📊 최종 결과</div>
-                <div style={{fontSize:"4.5rem",fontWeight:900,color:grade.color,lineHeight:1,marginBottom:"6px"}}>{score} / {total}</div>
-                <div style={{fontSize:"1.1rem",fontWeight:700,marginBottom:"20px",color:"#e2e8f0"}}>{grade.label}</div>
+  buttons.forEach(function(btn) { btn.disabled = true; });
+  buttons[q.answer].classList.add('correct');
+  if (idx !== q.answer) {
+    buttons[idx].classList.add('wrong');
+    wrongAnswers.push(current);
+  } else {
+    score++;
+  }
 
-                <div style={{display:"flex",justifyContent:"center",gap:"5px",flexWrap:"wrap",marginBottom:"16px"}}>
-                  {questions.map((_, i) => <span key={i} style={{fontSize:"1.2rem"}}>{wrongAnswers.includes(i)?"❌":"✅"}</span>)}
-                </div>
+  const exp = document.getElementById('explanation');
+  exp.textContent = (idx === q.answer ? '✅ 정답  ' : '❌ 오답  ') + q.explanation;
+  exp.style.display = 'block';
 
-                {wrongAnswers.length > 0 && (
-                  <div style={{textAlign:"left",background:"rgba(248,113,113,0.08)",border:"1px solid rgba(248,113,113,0.25)",borderRadius:"14px",padding:"16px 18px",maxHeight:"300px",overflowY:"auto",marginBottom:"16px"}}>
-                    <div style={{color:"#f87171",fontWeight:700,marginBottom:"10px",fontSize:"0.9rem"}}>📝 오답 노트 ({wrongAnswers.length}문제)</div>
-                    {wrongAnswers.map(wi => (
-                      <div key={wi} style={{fontSize:"0.84rem",color:"#fca5a5",marginBottom:"10px",lineHeight:1.55,borderBottom:"1px solid rgba(255,255,255,0.07)",paddingBottom:"8px"}}>
-                        <strong>Q{wi+1}.</strong> {questions[wi].question}<br/>
-                        <span style={{color:"#86efac"}}>✔ 정답: {questions[wi].options[questions[wi].answer]}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.textContent = (current + 1 >= questions.length) ? '📊 결과 보기' : '다음 문제 →';
+  nextBtn.style.display = 'block';
+}
 
-                <button onClick={handleRestart} style={{width:"100%",padding:"14px",borderRadius:"13px",background:"linear-gradient(135deg,#059669,#34d399)",border:"none",color:"#fff",fontSize:"1rem",fontWeight:700,cursor:"pointer"}}>
-                  🔄 처음부터 다시
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      }
+function nextQuestion() {
+  current++;
+  answered = false;
+  selected = null;
 
-      const optionStyle = (idx) => {
-        let bg = "rgba(255,255,255,0.07)", border = "1px solid rgba(255,255,255,0.15)", color = "#e2e8f0";
-        if (answered) {
-          if (idx === q.answer) { bg="rgba(74,222,128,0.2)"; border="1.5px solid #4ade80"; color="#4ade80"; }
-          else if (idx === selected) { bg="rgba(248,113,113,0.2)"; border="1.5px solid #f87171"; color="#f87171"; }
-        }
-        return { background:bg, border, color, borderRadius:"13px", padding:"13px 16px", textAlign:"left", fontSize:"0.93rem", cursor:answered?"default":"pointer", transition:"all 0.2s", fontWeight:answered&&idx===q.answer?700:400, lineHeight:1.5, width:"100%", display:"block", marginBottom:"10px" };
-      };
+  if (current >= questions.length) {
+    showResult();
+  } else {
+    render();
+  }
+}
 
-      return (
-        <div style={app}>
-          <div style={card}>
-            <div style={{textAlign:"center",marginBottom:"24px"}}>
-              <div style={{fontSize:"1rem",color:"#a78bfa",letterSpacing:"0.12em",textTransform:"uppercase",fontWeight:700,marginBottom:"8px"}}>🎵 디지털 오디오 이론 — 심화 퀴즈</div>
-              <div style={{color:"rgba(255,255,255,0.45)",fontSize:"0.82rem",marginBottom:"12px"}}>{current+1} / {total} 문제 · 현재 점수 {score}점</div>
-              <div style={{display:"flex",gap:"4px",justifyContent:"center",flexWrap:"wrap"}}>
-                {questions.map((_, i) => (
-                  <div key={i} style={{width:"22px",height:"5px",borderRadius:"3px",background: i<current?"#a78bfa":i===current?"#fff":"rgba(255,255,255,0.15)",transition:"background 0.3s"}} />
-                ))}
-              </div>
-            </div>
+function showResult() {
+  document.getElementById('quiz').style.display = 'none';
+  const result = document.getElementById('result');
+  result.style.display = 'block';
 
-            <div style={{fontSize:"3rem",textAlign:"center",marginBottom:"10px"}}>{q.emoji}</div>
-            <div style={{fontSize:"1.08rem",fontWeight:600,lineHeight:1.65,textAlign:"center",marginBottom:"24px",color:"#f0f0ff"}}>{q.question}</div>
+  const total = questions.length;
+  const pct = score / total;
+  let label, color;
+  if (pct === 1)       { label = '🏆 만점! 디지털 오디오 이론 완전 정복'; color = '#FFD700'; }
+  else if (pct >= 0.8) { label = '🥇 우수 — 핵심 개념을 깊이 이해하고 있습니다'; color = '#e6b800'; }
+  else if (pct >= 0.6) { label = '🥈 양호 — 기본기는 탄탄, 심화 개념 보완 필요'; color = '#aaa'; }
+  else if (pct >= 0.4) { label = '🥉 미흡 — 전반적인 재학습을 권장합니다'; color = '#CD7F32'; }
+  else                 { label = '📚 기초부터 체계적으로 재학습을 권장합니다'; color = '#e74c3c'; }
 
-            <div>
-              {q.options.map((opt, idx) => (
-                <button key={idx} style={optionStyle(idx)} onClick={() => handleSelect(idx)}>
-                  <span style={{opacity:0.45,marginRight:"10px"}}>{["①","②","③","④"][idx]}</span>{opt}
-                </button>
-              ))}
-            </div>
+  const scoreBig = document.getElementById('scoreBig');
+  scoreBig.textContent = score + ' / ' + total;
+  scoreBig.style.color = color;
+  document.getElementById('gradeLabel').textContent = label;
 
-            {answered && (
-              <div style={{marginTop:"16px",padding:"15px",background:"rgba(167,139,250,0.12)",border:"1px solid rgba(167,139,250,0.35)",borderRadius:"13px",fontSize:"0.88rem",color:"#e2e8f0",lineHeight:1.7}}>
-                {selected===q.answer?"✅ 정답  ":"❌ 오답  "}{q.explanation}
-              </div>
-            )}
+  const emojiRow = document.getElementById('emojiRow');
+  emojiRow.innerHTML = '';
+  for (let i = 0; i < total; i++) {
+    const span = document.createElement('span');
+    span.style.fontSize = '1.2rem';
+    span.textContent = wrongAnswers.indexOf(i) >= 0 ? '❌' : '✅';
+    emojiRow.appendChild(span);
+  }
 
+  if (wrongAnswers.length > 0) {
+    const ws = document.getElementById('wrongSection');
+    ws.style.display = 'block';
+    document.getElementById('wrongTitle').textContent = '📝 오답 노트 (' + wrongAnswers.length + '문제)';
+    const wl = document.getElementById('wrongList');
+    wl.innerHTML = '';
+    wrongAnswers.forEach(function(wi) {
+      const q = questions[wi];
+      const div = document.createElement('div');
+      div.className = 'wrong-item';
+      div.innerHTML = '<strong>Q' + (wi+1) + '.</strong> ' + q.question + '<br><span class="wrong-answer">✔ 정답: ' + q.options[q.answer] + '</span>';
+      wl.appendChild(div);
+    });
+  }
+}
 
-            {answered && (
-              <button onClick={handleNext} style={{marginTop:"18px",width:"100%",padding:"14px",borderRadius:"13px",background:"linear-gradient(135deg,#7c3aed,#a78bfa)",border:"none",color:"#fff",fontSize:"1rem",fontWeight:700,cursor:"pointer"}}>
-                {current+1>=total?"📊 결과 보기":"다음 문제 →"}
-              </button>
-            )}
-          </div>
-        </div>
-      );
-    }
+function restart() {
+  current = 0; score = 0; selected = null; answered = false; wrongAnswers = [];
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('quiz').style.display = 'block';
+  render();
+}
 
-    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-  </script>
+render();
+</script>
 </body>
 </html>
