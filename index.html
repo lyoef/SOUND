@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>digital audio</title>
+  <title>디지털 오디오 이론 심화 퀴즈</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
@@ -27,141 +27,101 @@
         id: 1,
         question: "나이퀴스트-섀넌 샘플링 정리(Nyquist-Shannon Sampling Theorem)에 따르면, 아날로그 신호를 정확하게 재현하기 위해 샘플링 주파수(fs)는 신호의 최대 주파수(fmax)에 대해 어떤 조건을 만족해야 하는가?",
         options: ["fs ≥ fmax", "fs ≥ 2 × fmax", "fs ≥ 4 × fmax", "fs = fmax / 2"],
-        answer: 1, emoji: "📐", tag: "이론",
+        answer: 1, emoji: "📐",
         explanation: "나이퀴스트 정리에 의하면 샘플링 주파수는 신호 최대 주파수의 2배 이상이어야 원래 신호를 완전히 복원할 수 있다. 이 조건을 위반하면 앨리어싱(Aliasing)이 발생한다. CD의 fs=44.1kHz는 인간 가청 상한 20kHz의 약 2.2배로 이 조건을 충족한다.",
       },
       {
         id: 2,
         question: "앨리어싱(Aliasing) 현상을 방지하기 위해 ADC 전단에 삽입하는 필터는?",
         options: ["로우패스 필터 (Anti-aliasing filter)", "하이패스 필터", "노치 필터", "올패스 필터"],
-        answer: 0, emoji: "🔬", tag: "이론",
+        answer: 0, emoji: "🔬",
         explanation: "앨리어싱은 샘플링 주파수의 절반(나이퀴스트 주파수)을 초과하는 성분이 접혀 들어와 저주파 간섭음을 만드는 현상이다. 이를 막기 위해 ADC 입력 전에 나이퀴스트 주파수 이상의 성분을 차단하는 Anti-aliasing 로우패스 필터를 사용한다.",
       },
       {
         id: 3,
-        question: "양자화 비트 뎁스(Bit Depth)가 16비트일 때 이론적인 동적 범위(Dynamic Range)는 약 얼마인가? (규칙: 1비트 ≈ 6.02 dB)",
-        options: ["약 48 dB", "약 72 dB", "약 96 dB", "약 120 dB"],
-        answer: 2, emoji: "📊", tag: "이론",
-        explanation: "동적 범위 = Bit Depth × 6.02 dB ≈ 16 × 6.02 ≈ 96.3 dB. 이는 가장 조용한 신호와 가장 큰 신호 사이의 비율을 나타낸다. 24비트 오디오는 약 144 dB의 동적 범위를 가져 전문 스튜디오 녹음에 적합하다.",
+        question: "비트 뎁스(Bit Depth)가 높을수록 오디오 신호에 미치는 영향으로 올바른 것은?",
+        options: [
+          "샘플링 주파수가 높아져 고역 표현이 향상된다",
+          "양자화 단계 수가 늘어나 동적 범위(Dynamic Range)가 넓어지고 양자화 노이즈가 줄어든다",
+          "파일 재생 속도가 빨라진다",
+          "스테레오 채널 수가 증가한다",
+        ],
+        answer: 1, emoji: "📊",
+        explanation: "비트 뎁스는 각 샘플의 진폭을 몇 단계로 표현하는지를 나타낸다. 16비트는 2¹⁶=65,536단계, 24비트는 2²⁴=16,777,216단계로 표현한다. 단계가 세밀할수록 신호와 양자화 노이즈의 차이(동적 범위)가 커지고, 아주 작은 소리도 정교하게 담을 수 있다.",
       },
       {
         id: 4,
         question: "양자화 노이즈(Quantization Noise)를 줄이기 위해 신호에 의도적으로 저레벨 무작위 노이즈를 추가하는 기술은?",
         options: ["딜레이(Delay)", "디더링(Dithering)", "컴프레션(Compression)", "오버샘플링(Oversampling)"],
-        answer: 1, emoji: "🎛️", tag: "이론",
+        answer: 1, emoji: "🎛️",
         explanation: "디더링(Dithering)은 양자화 과정에서 발생하는 비선형 왜곡(양자화 노이즈)을 통계적으로 분산시키기 위해 미세한 랜덤 노이즈를 의도적으로 추가하는 기법이다. 이를 통해 가청 왜곡 성분을 노이즈 플로어 아래로 낮출 수 있다.",
       },
       {
         id: 5,
         question: "MP3(MPEG-1 Audio Layer III) 코덱이 음원 압축에 사용하는 핵심 심리음향(Psychoacoustics) 원리는?",
         options: ["하모닉 강화(Harmonic Enhancement)와 위상 반전", "청각 마스킹(Auditory Masking)을 이용한 비가청 성분 제거", "샘플링 레이트를 동적으로 낮추는 가변 주파수 샘플링", "스테레오 채널을 모노로 다운믹싱하여 데이터를 절감"],
-        answer: 1, emoji: "🧠", tag: "이론",
+        answer: 1, emoji: "🧠",
         explanation: "MP3는 동시 마스킹(Simultaneous Masking)과 시간 마스킹(Temporal Masking) 현상을 활용한다. 강한 소리 근방의 약한 소리는 인간이 지각하지 못하므로(마스킹), 이 정보를 제거하거나 거칠게 양자화해 비트레이트를 대폭 낮춘다.",
       },
       {
         id: 6,
-        question: "PCM(Pulse Code Modulation) 오디오 파일의 비트레이트를 계산하는 올바른 공식은?",
-        options: ["비트레이트 = 샘플링 레이트 + 비트 뎁스 + 채널 수", "비트레이트 = 샘플링 레이트 × 비트 뎁스 × 채널 수", "비트레이트 = 샘플링 레이트 × 채널 수 / 비트 뎁스", "비트레이트 = 비트 뎁스² × 채널 수"],
-        answer: 1, emoji: "🧮", tag: "이론",
-        explanation: "PCM 비트레이트(bps) = 샘플링 레이트(Hz) × 비트 뎁스(bit) × 채널 수. 예: CD 스테레오(44,100 × 16 × 2 = 1,411,200 bps ≈ 1,411 kbps). 이것이 비압축 오디오의 기본 데이터량이며, MP3는 이를 128~320 kbps 수준으로 압축한다.",
+        question: "PCM 비트레이트를 결정하는 세 가지 요소의 관계로 올바른 것은?",
+        options: [
+          "샘플링 레이트가 높을수록, 비트 뎁스가 낮을수록, 채널이 많을수록 비트레이트가 높아진다",
+          "샘플링 레이트·비트 뎁스·채널 수 세 값이 모두 클수록 비트레이트가 높아진다",
+          "비트레이트는 샘플링 레이트에만 의존하고 비트 뎁스와 채널 수는 무관하다",
+          "채널 수가 늘어나면 샘플링 레이트가 자동으로 낮아져 비트레이트는 일정하다",
+        ],
+        answer: 1, emoji: "🧮",
+        explanation: "PCM 비트레이트(bps) = 샘플링 레이트 × 비트 뎁스 × 채널 수. 세 값이 모두 비례 관계다. CD 스테레오(44,100 × 16 × 2 ≈ 1,411 kbps)와 고해상도 오디오(96,000 × 24 × 2 ≈ 4,608 kbps)의 차이가 이 공식에서 비롯된다.",
       },
       {
         id: 7,
-        question: "DFT(이산 푸리에 변환)를 시간 영역 신호 분석에 사용할 때, 주파수 분해능(Frequency Resolution)을 높이려면 어떻게 해야 하는가?",
-        options: ["샘플링 레이트를 높인다", "FFT 윈도우 크기(N)를 줄인다", "FFT 윈도우 크기(N)를 늘린다", "비트 뎁스를 높인다"],
-        answer: 2, emoji: "📈", tag: "이론",
-        explanation: "주파수 분해능 Δf = fs / N (fs: 샘플링 레이트, N: FFT 포인트 수). N을 크게 할수록 Δf가 작아져 주파수 분해능이 향상된다. 단, N이 커질수록 시간 분해능은 낮아지는 시간-주파수 불확정성(Time-Frequency Uncertainty)이 존재한다.",
+        question: "FFT(고속 푸리에 변환) 분석에서 윈도우 크기(N)를 늘렸을 때 나타나는 트레이드오프(Trade-off)는?",
+        options: [
+          "주파수 분해능은 높아지지만 시간 분해능은 낮아진다",
+          "주파수 분해능과 시간 분해능 모두 높아진다",
+          "주파수 분해능은 낮아지고 시간 분해능은 높아진다",
+          "비트 뎁스가 자동으로 증가한다",
+        ],
+        answer: 0, emoji: "📈",
+        explanation: "주파수 분해능 Δf = fs/N이므로 N이 클수록 주파수를 세밀하게 구분할 수 있다. 그러나 N이 클수록 한 번의 분석에 더 긴 시간 구간이 필요해 빠르게 변하는 신호(타격음, 어택)의 시간적 위치를 정확히 파악하기 어려워진다. 이를 시간-주파수 불확정성(Uncertainty Principle)이라 한다.",
       },
       {
         id: 8,
-        question: "오버샘플링(Oversampling) DAC에서 샘플링 레이트를 8배 오버샘플링하는 주된 이유는?",
-        options: ["원본 신호의 주파수 성분을 8배 확장하기 위해", "재건 필터(Reconstruction Filter)의 급격한 차단 특성 요구를 완화하고 양자화 노이즈를 고주파 대역으로 분산시키기 위해", "스테레오 신호를 8채널 서라운드로 업믹싱하기 위해", "비트 뎁스를 8배 증가시켜 동적 범위를 확장하기 위해"],
-        answer: 1, emoji: "🔊", tag: "이론",
+        question: "오버샘플링(Oversampling) DAC에서 샘플링 레이트를 높이는 주된 이유는?",
+        options: [
+          "원본 신호의 주파수 성분을 확장하기 위해",
+          "재건 필터(Reconstruction Filter)의 급격한 차단 특성 요구를 완화하고 양자화 노이즈를 고주파 대역으로 분산시키기 위해",
+          "스테레오 신호를 서라운드로 업믹싱하기 위해",
+          "비트 뎁스를 증가시켜 동적 범위를 확장하기 위해",
+        ],
+        answer: 1, emoji: "🔊",
         explanation: "오버샘플링은 DAC 후단의 아날로그 재건 필터(Reconstruction LPF)가 나이퀴스트 주파수 근방에서 급격히 감쇠해야 하는 부담을 줄여준다. 또한 노이즈 셰이핑(Noise Shaping)과 결합하면 양자화 노이즈를 가청 대역 밖으로 이동시켜 체감 SNR을 향상시킨다.",
       },
       {
         id: 9,
         question: "FLAC(Free Lossless Audio Codec)과 MP3의 근본적인 차이점은?",
-        options: ["FLAC은 스테레오만 지원하고, MP3는 모노만 지원한다", "FLAC은 무손실 압축(Lossless)으로 원본 PCM 데이터를 완전히 복원할 수 있으나, MP3는 손실 압축(Lossy)으로 원본 복원이 불가능하다", "FLAC은 샘플링 레이트를 낮춰 용량을 줄이고, MP3는 비트 뎁스를 낮춰 용량을 줄인다", "FLAC은 DRM이 내장되어 있고, MP3는 오픈 포맷이다"],
-        answer: 1, emoji: "💾", tag: "이론",
+        options: [
+          "FLAC은 스테레오만 지원하고, MP3는 모노만 지원한다",
+          "FLAC은 무손실 압축(Lossless)으로 원본 PCM 데이터를 완전히 복원할 수 있으나, MP3는 손실 압축(Lossy)으로 원본 복원이 불가능하다",
+          "FLAC은 샘플링 레이트를 낮춰 용량을 줄이고, MP3는 비트 뎁스를 낮춰 용량을 줄인다",
+          "FLAC은 DRM이 내장되어 있고, MP3는 오픈 포맷이다",
+        ],
+        answer: 1, emoji: "💾",
         explanation: "FLAC은 예측 부호화(Linear Predictive Coding)와 Rice 부호화를 사용해 원본 PCM과 100% 동일한 데이터를 약 50~60% 크기로 압축하는 무손실 코덱이다. 반면 MP3는 심리음향 모델 기반의 손실 압축으로, 디코딩 후 원본과 데이터가 다르다.",
       },
       {
         id: 10,
-        question: "44.1 kHz, 24비트, 스테레오 오디오를 10분간 녹음했을 때 비압축 PCM 파일의 이론적 크기는 약 얼마인가?",
-        options: ["약 63 MB", "약 317 MB", "약 504 MB", "약 1.2 GB"],
-        answer: 2, emoji: "🗂️", tag: "이론",
-        explanation: "비트레이트 = 44,100 × 24 × 2 = 2,116,800 bps. 10분(600초) 데이터 = 2,116,800 × 600 / 8 = 158,760,000 bytes ≈ 151 MB. 보기 중 가장 근접한 값은 ③이며, 정확한 계산 공식 적용 훈련이 중요하다.",
-      },
-      {
-        id: 11,
-        question: "【실무】 클라이언트에게 납품한 보컬 믹스가 스튜디오 모니터에서는 선명했는데, 클라이언트 차량 오디오에서는 저음이 지나치게 과장되어 들린다고 컴플레인이 왔다. 가장 근본적인 원인은?",
-        options: ["클라이언트 차량 오디오의 앰프 출력이 부족하다", "믹스 환경(모니터 스피커·룸 어쿠스틱)이 충분히 검증되지 않아 저역 판단이 왜곡됐다", "납품 파일을 MP3로 변환하면서 저역 성분이 추가됐다", "44.1kHz 샘플링 레이트가 저역 표현에 불리하다"],
-        answer: 1, emoji: "🚗", tag: "실무",
-        explanation: "【실무 포인트】 룸 어쿠스틱이 불량한 환경에서 믹스하면 저역이 실제보다 적게 들려 보상 과정에서 저음을 과도하게 부스트하게 된다. 대처법: ① 음향 처리된 룸 확보 또는 룸 보정 소프트웨어(Sonarworks, Arc) 사용 ② 헤드폰·차량·이어폰 등 다양한 환경에서 A/B 체크(Translation Check) ③ 저역 레퍼런스 트랙과 스펙트럼 분석기를 병행 사용",
-      },
-      {
-        id: 12,
-        question: "【실무】 라이브 공연 녹음 중 갑자기 녹음된 파일에서 '딱딱' 하는 클리킹(Clicking) 노이즈가 반복적으로 발생했다. 디지털 오디오 이론 관점에서 가장 가능성 높은 원인은?",
-        options: ["마이크 캡슐에 먼지가 끼었다", "오디오 인터페이스와 DAW 간 샘플 클락 불일치(Clock Sync 오류)로 인한 드롭아웃", "비트 뎁스가 낮아 양자화 노이즈가 가청 영역으로 올라왔다", "케이블 임피던스 미스매치로 신호가 반사됐다"],
-        answer: 1, emoji: "⚡", tag: "실무",
-        explanation: "【실무 포인트】 디지털 오디오 장비 간 클락이 동기화되지 않으면 샘플 누락 또는 중복이 발생해 주기적인 클릭/팝 노이즈가 생긴다. 대처법: ① 모든 장비를 단일 마스터 클락(워드 클락 또는 S/PDIF)에 동기화 ② Buffer Size를 늘려 드롭아웃 여유 확보 ③ 케이블·포트 물리적 접촉 상태 점검.",
-      },
-      {
-        id: 13,
-        question: "【실무】 유튜브에 업로드한 내 믹스가 업로드 전보다 볼륨이 작아지고 소리가 달라졌다. 이유는?",
-        options: ["유튜브가 MP3로 변환하면서 샘플링 레이트를 낮췄다", "유튜브의 라우드니스 노멀라이제이션(-14 LUFS 기준)이 적용되어 기준 초과분을 자동 감쇠했다", "스테레오 파일을 모노로 다운믹싱했다", "유튜브 서버에서 비트 뎁스를 8비트로 변환했다"],
-        answer: 1, emoji: "📺", tag: "실무",
-        explanation: "【실무 포인트】 유튜브·스포티파이·애플뮤직 등 주요 플랫폼은 ITU-R BS.1770 기반의 라우드니스 노멀라이제이션을 적용한다. 유튜브 기준 약 -14 LUFS. 마스터링 단계에서 LUFS 미터(iZotope Insight, Youlean 등)로 통합 라우드니스를 확인하고 True Peak은 -1 dBTP 이하로 제한한다.",
-      },
-      {
-        id: 14,
-        question: "【실무】 보컬 녹음 후 DAW에서 파형을 보니 일부 구간이 완전히 납작하게 클리핑(Clipping)되어 있다. 이 테이크를 살릴 수 있는 방법은?",
-        options: ["볼륨 페이더를 낮추면 클리핑된 부분이 복원된다", "EQ로 고역을 낮추면 클리핑 왜곡이 줄어든다", "디지털 하드 클리핑으로 손실된 데이터는 원칙적으로 복원 불가능하며, 재녹음이 최선이다", "샘플링 레이트를 높이면 손실된 데이터를 보간할 수 있다"],
-        answer: 2, emoji: "🔴", tag: "실무",
-        explanation: "【실무 포인트】 디지털 클리핑은 0dBFS 이상 신호가 잘려나가 하드 왜곡이 생기는 것으로, 아날로그 새추레이션과 달리 원본 데이터 자체가 소멸한다. 예방이 유일한 해결책: ① 녹음 입력 레벨을 -18 ~ -12 dBFS 영역에서 유지(헤드룸 확보) ② 채널에 리미터를 삽입해 하드 클리핑 방지 ③ 의심스러우면 레벨을 낮추고 재녹음.",
-      },
-      {
-        id: 15,
-        question: "【실무】 드럼 샘플을 48kHz 프로젝트에 불러왔더니 피치가 살짝 내려가고 재생 속도가 느려졌다. 원인은?",
-        options: ["샘플 파일의 비트 뎁스가 프로젝트와 달라 발생한 피치 변환 오류", "샘플 파일의 샘플링 레이트(44.1kHz)와 프로젝트 레이트(48kHz)가 달라 DAW가 샘플레이트 컨버전 없이 재생했다", "스테레오 샘플을 모노 트랙에 불러와서 채널 불균형이 생겼다", "드럼 샘플의 BPM이 프로젝트 템포와 달라서 생기는 타임스트레치 오류"],
-        answer: 1, emoji: "🥁", tag: "실무",
-        explanation: "【실무 포인트】 44.1kHz 파일을 48kHz 프로젝트에서 컨버전 없이 재생하면 피치와 속도가 틀어진다. 대처법: ① DAW 설정에서 자동 샘플레이트 컨버전(SRC) 활성화 ② 프로젝트 시작 전 샘플레이트를 통일(영상 작업은 48kHz, 음악은 44.1kHz) ③ 고품질 SRC 알고리즘 사용.",
-      },
-      {
-        id: 16,
-        question: "【실무】 EQ로 보컬의 3kHz 대역을 +8dB 부스트했더니 처음엔 선명해졌지만 장시간 청취 시 귀가 피로해진다. 이를 해결하는 올바른 접근법은?",
-        options: ["부스트 대신 3kHz 주변 불필요 대역을 좁게 Cut하고, 보완적으로 다른 트랙의 경쟁 주파수를 낮춘다", "컴프레서를 추가로 걸어 전체 레벨을 낮춘다", "샘플링 레이트를 높여 고역 표현을 개선한다", "스테레오 채널을 모노로 합쳐 위상을 정리한다"],
-        answer: 0, emoji: "👂", tag: "실무",
-        explanation: "【실무 포인트】 특정 대역 과도 부스트는 청각 피로(Ear Fatigue)를 유발한다. 전문가 접근법: ① 'Subtractive EQ First' — 경쟁 트랙의 3kHz를 살짝 Cut해 보컬 공간을 만든다 ② 보컬 자체는 최소한의 부스트로 유지 ③ 다이나믹 EQ나 멀티밴드 컴프를 사용해 보컬 레벨에 따라 EQ양이 자동 조절되도록 설정.",
-      },
-      {
-        id: 17,
-        question: "【실무】 믹스에 컴프레서를 걸었더니 드럼의 킥과 스네어 타격감이 사라지고 소리가 뭉개졌다. 파라미터 조정 순서로 가장 올바른 대처는?",
-        options: ["Ratio를 높이고 Threshold를 낮춰 더 강하게 압축한다", "Attack을 느리게(20~50ms) 조정해 트랜지언트가 컴프 작동 전에 통과되도록 하고, Release를 킥 리듬에 맞춰 조정한다", "Make-up Gain을 높여 레벨을 보상하면 타격감이 돌아온다", "모노 버스에 컴프를 걸지 않고 스테레오 링크를 해제한다"],
-        answer: 1, emoji: "🥊", tag: "실무",
-        explanation: "【실무 포인트】 드럼 컴프레싱에서 타격감(Punch) 소실의 원인은 대부분 Attack이 너무 빠른 것이다. 해결 원리: Attack을 느리게 → 트랜지언트는 통과 → 이후 서스테인 부분만 압축 → 킥·스네어가 앞으로 튀어나오는 느낌. Release는 다음 킥이 오기 전에 게인이 완전히 복원될 수 있도록 BPM 기반으로 계산한다(60,000ms ÷ BPM).",
-      },
-      {
-        id: 18,
-        question: "【실무】 마스터링 단계에서 리미터를 걸었더니 전체 레벨은 올라갔지만 저음이 펌핑되며 들썩이는 현상이 나타났다. 원인과 대처법은?",
-        options: ["리미터의 Ceiling을 0dBFS로 설정해야 하는데 낮게 설정해서 생긴 오류다", "킥 등 저역 트랜지언트가 리미터를 과도하게 트리거해 전체 레벨이 들썩이는 것이며, 리미터 전단에 멀티밴드 처리나 저역 트랜지언트 제어가 필요하다", "스테레오 파일을 모노 호환 설정 없이 리미팅했기 때문이다", "샘플링 레이트가 44.1kHz일 때 리미터 알고리즘이 저역을 정확히 감지하지 못한다"],
-        answer: 1, emoji: "🎚️", tag: "실무",
-        explanation: "【실무 포인트】 킥·베이스의 강한 저역 트랜지언트는 브로드밴드 리미터를 과도하게 트리거한다. 대처법: ① 리미터 전단에 멀티밴드 컴프로 저역만 별도 제어 ② 킥 채널에 트랜지언트 셰이퍼로 어택 피크를 줄임 ③ True Peak 리미터(-1 dBTP)와 브로드밴드 리미터를 직렬 사용 ④ LUFS 타깃보다 음악적 다이나믹을 우선시.",
-      },
-      {
-        id: 19,
-        question: "【실무】 영상 후반작업(Post-Production)을 위해 음악을 납품할 때 음악 파일의 샘플링 레이트를 48kHz로 요청받았다. 기존 44.1kHz 마스터를 변환할 때 반드시 주의해야 할 점은?",
-        options: ["48kHz는 44.1kHz보다 샘플 수가 많으므로 변환 없이 그냥 파일 헤더만 수정하면 된다", "고품질 SRC(Sample Rate Conversion) 알고리즘을 사용해야 하며, 저품질 변환 시 앨리어싱 성분이 추가되거나 고역이 손실될 수 있다", "48kHz 변환 시 반드시 비트 뎁스도 32비트로 올려야 한다", "44.1kHz를 48kHz로 올리면 자동으로 음질이 향상된다"],
-        answer: 1, emoji: "🎬", tag: "실무",
-        explanation: "【실무 포인트】 샘플레이트 컨버전은 단순한 포맷 변경이 아니라 디지털 필터링과 보간(Interpolation)을 포함한 복잡한 DSP 연산이다. 저품질 SRC는 고역 롤오프, 앨리어싱 성분 추가, 위상 왜곡을 유발한다. 실무 기준: iZotope RX, r8brain 등 검증된 알고리즘 사용. 영상 프로젝트는 처음부터 48kHz로 작업하는 것이 최선이다.",
-      },
-      {
-        id: 20,
-        question: "【실무】 스트리밍 플랫폼 납품용 마스터링에서 True Peak 제한을 -1 dBTP로 설정하는 이유는?",
-        options: ["저작권 보호 규격이 -1 dBTP를 의무화하고 있기 때문이다", "MP3·AAC 등 손실 압축 인코딩 과정에서 Inter-Sample Peak이 0dBFS를 초과해 클리핑이 발생할 수 있기 때문이다", "스트리밍 서버의 라우드니스 노멀라이제이션이 -1 dBTP 이상 신호를 삭제하기 때문이다", "True Peak와 Sample Peak의 차이가 항상 1dB이기 때문에 관습적으로 사용한다"],
-        answer: 1, emoji: "📡", tag: "실무",
-        explanation: "【실무 포인트】 Inter-Sample Peak(ISP)는 샘플 사이의 실제 아날로그 파형이 개별 샘플값보다 높을 수 있는 현상이다. PCM에서 0dBFS에 딱 맞게 납품해도 MP3/AAC 인코딩 후 디코딩 시 ISP가 최대 3dB 이상 초과할 수 있다. True Peak 미터(ITU-R BS.1770-4)는 4배 오버샘플링으로 ISP를 감지하므로, -1 dBTP 제한은 인코딩 마진을 확보하는 업계 표준 관행이다.",
+        question: "디지털-아날로그 변환(DAC) 과정에서 발생하는 '재건 필터(Reconstruction Filter)'의 역할은?",
+        options: [
+          "아날로그 신호를 다시 디지털로 변환하기 위해 샘플을 측정한다",
+          "샘플링 과정에서 생긴 이미지 주파수(나이퀴스트 이상의 성분)를 제거하여 원래 아날로그 파형을 매끄럽게 복원한다",
+          "신호의 비트 뎁스를 높여 동적 범위를 확장한다",
+          "스테레오 신호를 좌우 채널로 분리한다",
+        ],
+        answer: 1, emoji: "🔁",
+        explanation: "DAC는 이산적인 샘플값들을 계단 형태의 신호로 출력하는데, 이 과정에서 나이퀴스트 주파수 이상의 이미지 성분이 생긴다. 재건 필터(로우패스 필터)는 이 불필요한 고주파 성분을 제거해 원래의 부드러운 아날로그 파형을 복원하는 역할을 한다.",
       },
     ];
 
@@ -175,7 +135,6 @@
 
       const total = questions.length;
       const q = questions[current];
-      const isPractical = q?.tag === "실무";
 
       const handleSelect = (idx) => {
         if (answered) return;
@@ -195,17 +154,12 @@
         setShowResult(false); setAnswered(false); setWrongAnswers([]);
       };
 
-      const theoryWrong = wrongAnswers.filter(i => questions[i].tag !== "실무");
-      const practicalWrong = wrongAnswers.filter(i => questions[i].tag === "실무");
-      const theoryScore = 10 - theoryWrong.length;
-      const practicalScore = 10 - practicalWrong.length;
-
       const getGrade = () => {
         const pct = score / total;
-        if (pct === 1)  return { label: "🏆 만점! 이론과 실무 모두 완벽합니다", color: "#FFD700" };
-        if (pct >= 0.8) return { label: "🥇 우수 — 현장 투입 가능한 수준", color: "#e6b800" };
-        if (pct >= 0.6) return { label: "🥈 양호 — 실무 트러블슈팅 보완 필요", color: "#aaa" };
-        if (pct >= 0.4) return { label: "🥉 미흡 — 이론·실무 전반 재학습 권장", color: "#CD7F32" };
+        if (pct === 1)  return { label: "🏆 만점! 디지털 오디오 이론 완전 정복", color: "#FFD700" };
+        if (pct >= 0.8) return { label: "🥇 우수 — 핵심 개념을 깊이 이해하고 있습니다", color: "#e6b800" };
+        if (pct >= 0.6) return { label: "🥈 양호 — 기본기는 탄탄, 심화 개념 보완 필요", color: "#aaa" };
+        if (pct >= 0.4) return { label: "🥉 미흡 — 전반적인 재학습을 권장합니다", color: "#CD7F32" };
         return { label: "📚 기초부터 체계적으로 재학습을 권장합니다", color: "#e74c3c" };
       };
 
@@ -223,15 +177,6 @@
                 <div style={{fontSize:"4.5rem",fontWeight:900,color:grade.color,lineHeight:1,marginBottom:"6px"}}>{score} / {total}</div>
                 <div style={{fontSize:"1.1rem",fontWeight:700,marginBottom:"20px",color:"#e2e8f0"}}>{grade.label}</div>
 
-                <div style={{display:"flex",gap:"12px",justifyContent:"center",marginBottom:"20px"}}>
-                  {[["🎓 이론 파트", theoryScore, "#a78bfa"], ["🛠 실무 파트", practicalScore, "#fb923c"]].map(([label, s, color]) => (
-                    <div key={label} style={{flex:1,background:"rgba(255,255,255,0.06)",border:`1px solid ${color}44`,borderRadius:"14px",padding:"14px",textAlign:"center"}}>
-                      <div style={{fontSize:"0.75rem",color,fontWeight:700,marginBottom:"6px"}}>{label}</div>
-                      <div style={{fontSize:"2rem",fontWeight:900,color:s>=7?"#4ade80":"#f87171"}}>{s}/10</div>
-                    </div>
-                  ))}
-                </div>
-
                 <div style={{display:"flex",justifyContent:"center",gap:"5px",flexWrap:"wrap",marginBottom:"16px"}}>
                   {questions.map((_, i) => <span key={i} style={{fontSize:"1.2rem"}}>{wrongAnswers.includes(i)?"❌":"✅"}</span>)}
                 </div>
@@ -241,7 +186,6 @@
                     <div style={{color:"#f87171",fontWeight:700,marginBottom:"10px",fontSize:"0.9rem"}}>📝 오답 노트 ({wrongAnswers.length}문제)</div>
                     {wrongAnswers.map(wi => (
                       <div key={wi} style={{fontSize:"0.84rem",color:"#fca5a5",marginBottom:"10px",lineHeight:1.55,borderBottom:"1px solid rgba(255,255,255,0.07)",paddingBottom:"8px"}}>
-                        <span style={{fontSize:"0.7rem",fontWeight:700,padding:"1px 7px",borderRadius:"10px",marginRight:"6px",background:questions[wi].tag==="실무"?"rgba(251,146,60,0.2)":"rgba(167,139,250,0.2)",color:questions[wi].tag==="실무"?"#fb923c":"#c4b5fd"}}>{questions[wi].tag||"이론"}</span>
                         <strong>Q{wi+1}.</strong> {questions[wi].question}<br/>
                         <span style={{color:"#86efac"}}>✔ 정답: {questions[wi].options[questions[wi].answer]}</span>
                       </div>
@@ -272,18 +216,11 @@
           <div style={card}>
             <div style={{textAlign:"center",marginBottom:"24px"}}>
               <div style={{fontSize:"1rem",color:"#a78bfa",letterSpacing:"0.12em",textTransform:"uppercase",fontWeight:700,marginBottom:"8px"}}>🎵 디지털 오디오 이론 — 심화 퀴즈</div>
-              <span style={{display:"inline-block",padding:"3px 12px",borderRadius:"20px",fontSize:"0.78rem",fontWeight:700,background:isPractical?"rgba(251,146,60,0.2)":"rgba(167,139,250,0.2)",border:isPractical?"1px solid #fb923c":"1px solid #a78bfa",color:isPractical?"#fb923c":"#c4b5fd",marginBottom:"8px"}}>
-                {isPractical ? "🛠 실무 트러블슈팅" : "🎓 이론"}
-              </span>
               <div style={{color:"rgba(255,255,255,0.45)",fontSize:"0.82rem",marginBottom:"12px"}}>{current+1} / {total} 문제 · 현재 점수 {score}점</div>
-              <div style={{display:"flex",gap:"4px",justifyContent:"center",flexWrap:"wrap",marginBottom:"4px"}}>
-                {questions.map((qq, i) => (
-                  <div key={i} style={{width:"22px",height:"5px",borderRadius:"3px",background: i<current?(qq.tag==="실무"?"#fb923c":"#a78bfa"):i===current?"#fff":"rgba(255,255,255,0.15)",transition:"background 0.3s"}} />
+              <div style={{display:"flex",gap:"4px",justifyContent:"center",flexWrap:"wrap"}}>
+                {questions.map((_, i) => (
+                  <div key={i} style={{width:"22px",height:"5px",borderRadius:"3px",background: i<current?"#a78bfa":i===current?"#fff":"rgba(255,255,255,0.15)",transition:"background 0.3s"}} />
                 ))}
-              </div>
-              <div style={{display:"flex",justifyContent:"center",gap:"16px",fontSize:"0.72rem",color:"rgba(255,255,255,0.4)",marginTop:"4px"}}>
-                <span>■ <span style={{color:"#a78bfa"}}>이론</span> Q1~10</span>
-                <span>■ <span style={{color:"#fb923c"}}>실무</span> Q11~20</span>
               </div>
             </div>
 
@@ -299,10 +236,11 @@
             </div>
 
             {answered && (
-              <div style={{marginTop:"16px",padding:"15px",background:isPractical?"rgba(251,146,60,0.1)":"rgba(167,139,250,0.12)",border:isPractical?"1px solid rgba(251,146,60,0.35)":"1px solid rgba(167,139,250,0.35)",borderRadius:"13px",fontSize:"0.88rem",color:"#e2e8f0",lineHeight:1.7}}>
+              <div style={{marginTop:"16px",padding:"15px",background:"rgba(167,139,250,0.12)",border:"1px solid rgba(167,139,250,0.35)",borderRadius:"13px",fontSize:"0.88rem",color:"#e2e8f0",lineHeight:1.7}}>
                 {selected===q.answer?"✅ 정답  ":"❌ 오답  "}{q.explanation}
               </div>
             )}
+
 
             {answered && (
               <button onClick={handleNext} style={{marginTop:"18px",width:"100%",padding:"14px",borderRadius:"13px",background:isPractical?"linear-gradient(135deg,#c2410c,#fb923c)":"linear-gradient(135deg,#7c3aed,#a78bfa)",border:"none",color:"#fff",fontSize:"1rem",fontWeight:700,cursor:"pointer"}}>
